@@ -17,6 +17,7 @@
 #include "compat.h"
 #include "tinyformat.h"
 #include "utiltime.h"
+#include "logging.h"
 
 #include <atomic>
 #include <exception>
@@ -29,9 +30,9 @@
 #include <boost/signals2/signal.hpp>
 #include <boost/thread/exceptions.hpp>
 
-static const bool DEFAULT_LOGTIMEMICROS = false;
-static const bool DEFAULT_LOGIPS        = false;
-static const bool DEFAULT_LOGTIMESTAMPS = true;
+// static const bool DEFAULT_LOGTIMEMICROS = false;
+// static const bool DEFAULT_LOGIPS        = false;
+// static const bool DEFAULT_LOGTIMESTAMPS = true;
 
 /** Signals for translation. */
 class CTranslationInterface
@@ -48,7 +49,7 @@ extern bool fPrintToDebugLog;
 
 extern bool fLogTimestamps;
 extern bool fLogTimeMicros;
-extern bool fLogIPs;
+// extern bool fLogIPs;
 extern std::atomic<bool> fReopenDebugLog;
 extern CTranslationInterface translationInterface;
 
@@ -71,22 +72,22 @@ bool SetupNetworking();
 /** Return true if log accepts specified category */
 bool LogAcceptCategory(const char* category);
 /** Send a string to the log output */
-int LogPrintStr(const std::string &str);
+// int LogPrintStr(const std::string &str);
 
 #define LogPrint(category, ...) do { \
     if (LogAcceptCategory((category))) { \
-        LogPrintStr(tfm::format(__VA_ARGS__)); \
+        LogInstance().LogPrintStr(tfm::format(__VA_ARGS__)); \
     } \
 } while(0)
 
-#define LogPrintf(...) do { \
-    LogPrintStr(tfm::format(__VA_ARGS__)); \
-} while(0)
+// #define LogPrintf(...) do { \
+//     LogPrintStr(tfm::format(__VA_ARGS__)); \
+// } while(0)
 
 template<typename... Args>
 bool error(const char* fmt, const Args&... args)
 {
-    LogPrintStr("ERROR: " + tfm::format(fmt, args...) + "\n");
+    LogInstance().LogPrintStr("ERROR: " + tfm::format(fmt, args...) + "\n");
     return false;
 }
 
