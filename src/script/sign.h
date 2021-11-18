@@ -6,11 +6,18 @@
 #ifndef BITCOIN_SCRIPT_SIGN_H
 #define BITCOIN_SCRIPT_SIGN_H
 
+#include <key.h>
+#include <boost/optional.hpp>
+#include <hash.h>
+#include <pubkey.h>
 #include "script/interpreter.h"
+#include <streams.h>
 
+class CKey;
 class CKeyID;
 class CKeyStore;
 class CScript;
+class CScriptID;
 class CTransaction;
 
 struct CMutableTransaction;
@@ -80,5 +87,59 @@ SignatureData CombineSignatures(const CScript& scriptPubKey, const BaseSignature
 /** Extract signature data from a transaction, and insert it. */
 SignatureData DataFromTransaction(const CMutableTransaction& tx, unsigned int nIn);
 void UpdateTransaction(CMutableTransaction& tx, unsigned int nIn, const SignatureData& data);
+
+struct KeyOriginInfo
+{
+    unsigned char fingerprint[4]; //!< First 32 bits of the Hash160 of the public key at the root of the path
+    std::vector<uint32_t> path;
+
+    friend bool operator==(const KeyOriginInfo& a, const KeyOriginInfo& b)
+    {
+        return std::equal(std::begin(a.fingerprint), std::end(a.fingerprint), std::begin(b.fingerprint)) && a.path == b.path;
+    }
+
+    ADD_SERIALIZE_METHODS;
+    template <typename Stream, typename Operation>
+    inline void SerializationOp(Stream& s, Operation ser_action)
+    {
+        READWRITE(fingerprint);
+        READWRITE(path);
+    }
+
+    void clear()
+    {
+        memset(fingerprint, 0, 4);
+        path.clear();
+    }
+};
+
+/** An interface to be implemented by keystores that support signing. */
+class SigningProvider
+{
+public:
+    virtual ~SigningProvider() {}
+    virtual bool GetCScript(const CScriptID &scriptid, CScript& script) const { return false; }
+    virtual bool GetPubKey(const CKeyID &address, CPubKey& pubkey) const { return false; }
+    virtual bool GetKey(const CKeyID &address, CKey& key) const { return false; }
+    virtual bool GetKeyOrigin(const CKeyID& keyid, KeyOriginInfo& info) const { return false; }
+};
+
+extern const SigningProvider& DUMMY_SIGNING_PROVIDER;
+
+struct FlatSigningProvider final : public SigningProvider
+{
+    std::map<CScriptID, CScript> scripts;
+    std::map<CKeyID, CPubKey> pubkeys;
+    std::map<CKeyID, std::pair<CPubKey, KeyOriginInfo>> origins;
+    std::map<CKeyID, CKey> keys;
+
+    bool GetCScript(const CScriptID& scriptid, CScript& script) const override;
+    bool GetPubKey(const CKeyID& keyid, CPubKey& pubkey) const override;
+    bool GetKeyOrigin(const CKeyID& keyid, KeyOriginInfo& info) const override;
+    bool GetKey(const CKeyID& keyid, CKey& key) const override;
+};
+
+FlatSigningProvider Merge(const FlatSigningProvider& a, const FlatSigningProvider& b);
+
 
 #endif // BITCOIN_SCRIPT_SIGN_H

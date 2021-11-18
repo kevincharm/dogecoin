@@ -78,6 +78,7 @@ endif
 BITCOIN_CORE_H = \
   addrdb.h \
   addrman.h \
+  attributes.h \
   alert.h \
   auxpow.h \
   base58.h \
@@ -92,6 +93,7 @@ BITCOIN_CORE_H = \
   clientversion.h \
   coins.h \
   compat.h \
+  compat/assumptions.h \
   compat/byteswap.h \
   compat/endian.h \
   compat/sanity.h \
@@ -100,6 +102,7 @@ BITCOIN_CORE_H = \
   core_io.h \
   core_memusage.h \
   cuckoocache.h \
+  fs.h \
   dogecoin.cpp \
   dogecoin.h \
   dogecoin-fees.cpp \
@@ -109,9 +112,11 @@ BITCOIN_CORE_H = \
   indirectmap.h \
   init.h \
   key.h \
+  key_io.h \
   keystore.h \
   dbwrapper.h \
   limitedmap.h \
+  logging.h \
   memusage.h \
   merkleblock.h \
   miner.h \
@@ -135,6 +140,7 @@ BITCOIN_CORE_H = \
   rpc/server.h \
   rpc/register.h \
   scheduler.h \
+  script/descriptor.h \
   script/sigcache.h \
   script/sign.h \
   script/standard.h \
@@ -154,6 +160,8 @@ BITCOIN_CORE_H = \
   txmempool.h \
   ui_interface.h \
   undo.h \
+  util/bip32.h \
+  util/memory.h \
   util.h \
   utilmoneystr.h \
   utiltime.h \
@@ -210,6 +218,7 @@ libdogecoin_server_a_SOURCES = \
   rpc/rawtransaction.cpp \
   rpc/server.cpp \
   script/sigcache.cpp \
+  script/descriptor.cpp \
   script/ismine.cpp \
   timedata.cpp \
   torcontrol.cpp \
@@ -297,6 +306,7 @@ libdogecoin_consensus_a_SOURCES = \
   script/script_error.cpp \
   script/script_error.h \
   serialize.h \
+  span.h \
   tinyformat.h \
   uint256.cpp \
   uint256.h \
@@ -319,6 +329,7 @@ libdogecoin_common_a_SOURCES = \
   core_read.cpp \
   core_write.cpp \
   key.cpp \
+  key_io.cpp \
   keystore.cpp \
   netaddress.cpp \
   netbase.cpp \
@@ -344,11 +355,14 @@ libdogecoin_util_a_SOURCES = \
   compat/glibc_sanity.cpp \
   compat/glibcxx_sanity.cpp \
   compat/strnlen.cpp \
+  fs.cpp \
+  logging.cpp \
   random.cpp \
   rpc/protocol.cpp \
   support/cleanse.cpp \
   sync.cpp \
   threadinterrupt.cpp \
+  util/bip32.cpp \
   util.cpp \
   utilmoneystr.cpp \
   utilstrencodings.cpp \
