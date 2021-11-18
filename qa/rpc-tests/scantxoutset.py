@@ -9,8 +9,12 @@ from test_framework.util import assert_equal
 from decimal import Decimal
 import shutil
 import os
+import logging
 
 class ScantxoutsetTest(BitcoinTestFramework):
+    def __init__():
+        self.log = logging.getLogger("scantxoutset")
+
     def set_test_params(self):
         self.num_nodes = 1
         self.setup_clean_chain = True
