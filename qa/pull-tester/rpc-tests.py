@@ -166,6 +166,7 @@ testScripts = [
     'p2p-leaktests.py',
     'replace-by-fee.py',
     'p2p-policy.py',
+    'scantxoutset.py',
 ]
 if ENABLE_ZMQ:
     testScripts.append('zmq_test.py')
