@@ -12,7 +12,7 @@ import os
 import logging
 
 class ScantxoutsetTest(BitcoinTestFramework):
-    def __init__():
+    def __init__(self):
         self.log = logging.getLogger("scantxoutset")
 
     def set_test_params(self):
